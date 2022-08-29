@@ -12,7 +12,7 @@ from fastapi.responses import JSONResponse
 from fastapi import APIRouter
 
 #Native Modules
-from models.Travels import *
+from schemas.Travels import *
 
 
 router = APIRouter()
