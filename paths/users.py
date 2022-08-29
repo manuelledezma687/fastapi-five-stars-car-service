@@ -1,7 +1,4 @@
-import json
 from typing import List
-from http import client
-
 from fastapi import status
 from fastapi import Path
 from fastapi.responses import JSONResponse
@@ -9,7 +6,6 @@ from fastapi import APIRouter
 from connections import SessionLocal,engine
 from sqlalchemy.orm import Session
 from fastapi.params import Depends
-
 import models
 from schemas.users import UserRegister, UserUpdate
 
@@ -35,9 +31,9 @@ def show_user(user_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     ## This path operation shows a valid user in the app
 
     **- Parameters:** 
-    -
+    - user_id : int
 
-    **Returns a json list with a valid user in the app, with the following keys:**
+    **Returns a json with a valid user in the app, with the following keys:**
     - user_id: int PK
     - email: Emailstr
     - telephone: int
@@ -109,7 +105,7 @@ def create_user(entry_point:UserRegister,db:Session=Depends(get_db)):
     **- Parameters:**
     - user: UserRegister
     
-    **Returns a json message with a message:** 
+    **Returns a json body with a message:** 
     - message: "User Register Successfully"
         
     """
@@ -127,13 +123,14 @@ def create_user(entry_point:UserRegister,db:Session=Depends(get_db)):
         db.commit()
         db.refresh(user)
         return JSONResponse(status_code=201, content={'message': "User Register Successfully"})
-    except:
-        return JSONResponse(status_code=500, content={'message': "Sorry, there is an error"})
+    except Exception as error:
+        print(error)
+        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
 
 
 @router.put(
     path="/users/{user_id}",
-    response_model=UserRegister,
+    response_model=UserUpdate,
     status_code=status.HTTP_200_OK,
     summary="Update an User",
     tags=["Users"])
@@ -144,13 +141,15 @@ def update_a_user(user_id:int,entry_point:UserUpdate,db:Session=Depends(get_db))
     **- Parameters:**
     - user_id: int
 
-    **Returns a json message with a message:** 
+    **Returns a json body with a message:** 
     - message: "User Updated"
         
     """
     try:
         user = db.query(models.Users).filter_by(user_id=user_id).first()
-        user.first_name = entry_point.first_name
+        user.email = entry_point.email
+        user.telephone = entry_point.telephone
+        user.language= entry_point.language
         db.commit()
         db.refresh(user)
         if not user:
@@ -173,7 +172,7 @@ def delete_users(user_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     **- Parameters:**
     - user_id: int
 
-    **Returns a json message with a message:** 
+    **Returns a json body with a message:** 
     - message: "User Deleted"
         
     """

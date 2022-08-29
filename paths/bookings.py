@@ -1,7 +1,4 @@
-import json
 from typing import List
-from http import client
-
 from fastapi import status
 from fastapi import Path
 from fastapi.responses import JSONResponse
@@ -25,6 +22,41 @@ def get_db():
         db.close()
 
 
+@router.get(path="/bookings/{booking_id}",
+            response_model=Bookings,
+            status_code=status.HTTP_200_OK, 
+            summary="Show a valid booking",
+            tags=["Bookings"])
+def show_booking(booking_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
+    """
+    ## This path operation shows a valid booking in the app.
+
+    **- Parameters:** 
+    - booking_id: int
+
+    **Returns a json with a valid booking in the app, with the following keys:**
+    - booking_id: int Primary Key
+    - user_id: int FK
+    - destiny: str
+    - payment_method: str
+    - amount_of_booking: float
+    - created_at: datetime Field
+    - status: int
+               
+    """
+    try:
+        booking = db.query(models.Bookings).filter_by(booking_id=booking_id).first()
+        db.commit()
+        db.refresh(booking)
+        if not booking:
+            return JSONResponse(status_code=400, content={'message':'booking Not Found.'})
+        else:
+            return booking
+    except Exception as error:
+        print(error)
+        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
+    
+    
 @router.get(
     path="/bookings",
     response_model=List[Bookings],
@@ -65,7 +97,7 @@ def post_booking(entry_point:Bookings,db:Session=Depends(get_db)):
     **- Parameters:**
     - booking: Bookings
 
-    **Returns a json message with a message:** 
+    **Returns a json body with a message:** 
     - message: "Booking Saved successfully"
 
     """
@@ -96,7 +128,7 @@ def delete_booking(booking_id:int= Path(...,gt=0),db:Session=Depends(get_db)):
     **- Parameters:**
     - booking_id: int
 
-    **Returns a json message with a message:** 
+    **Returns a json body with a message:** 
     - message: "Booking Deleted"
 
     """

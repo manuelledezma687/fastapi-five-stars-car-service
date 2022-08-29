@@ -1,25 +1,14 @@
-#Python
-import json
-from http import client
-
-#Pydantic
 from pydantic import EmailStr
-
-#FastApi
 from fastapi import status
 from fastapi import Form
-from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter
-
-#Native Modules
 from schemas.contact import Contact
 
 
 router = APIRouter()
 
 
-## Contact.
 @router.post(
     path="/contact", 
     status_code=status.HTTP_201_CREATED, 
@@ -44,7 +33,7 @@ def contact(
         email: EmailStr
         comments: str
 
-    **Returns a message confirmation:**
+    **Returns a confirmation message:**
     - "Thank you very much for sending your message, we will contact you shortly."
         
     """

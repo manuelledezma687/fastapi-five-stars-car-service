@@ -1,7 +1,4 @@
-# Pydantic
 from pydantic import BaseModel, Field, EmailStr
-
-#FastApi
 from fastapi import Form
 
 

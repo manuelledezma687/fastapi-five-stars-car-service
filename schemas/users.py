@@ -1,5 +1,5 @@
 from typing import Optional
-from enum import Enum
+from enum import Enum ##Pendiente de deuda técnica
 from datetime import date
 from datetime import datetime
 from pydantic import BaseModel, Field
@@ -47,15 +47,17 @@ class UserRegister(BaseModel):
         orm_mode =True
         
 class UserUpdate(BaseModel):   
-    first_name:str
-   
+    email: EmailStr = Field(
+        ...,
+        example="testing@gmail.com")
+    telephone: int = Field(
+        ...,
+        example=1123322345
+        )
+    language: str = Field (min_length=4,max_length=20, example="Español")
 
     class Config:
         orm_mode =True
-        
-        
-class Response(BaseModel):   
-    message: str
     
 
     

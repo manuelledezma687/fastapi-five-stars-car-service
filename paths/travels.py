@@ -1,7 +1,4 @@
-import json
 from typing import List
-from http import client
-
 from fastapi import status
 from fastapi import Path
 from fastapi.responses import JSONResponse
@@ -9,7 +6,6 @@ from fastapi import APIRouter
 from connections import SessionLocal,engine
 from sqlalchemy.orm import Session
 from fastapi.params import Depends
-
 import models
 from schemas.travels import Travels
 
@@ -23,6 +19,37 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@router.get(path="/travels/{travel_id}",
+            response_model=Travels,
+            status_code=status.HTTP_200_OK, 
+            summary="Show a valid travel",
+            tags=["Travels"])
+def show_travel(travel_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
+    """
+    ## This path operation shows a valid travel in the app.
+
+    **- Parameters:** 
+    - travel_id: int
+
+    **Returns a json with a valid travel in the app, with the following keys:**
+    - travel_id: int Primary Key
+    - booking_id: int FK
+    - Created_at: datetime Field
+    - status: bool
+               
+    """
+    try:
+        travel = db.query(models.Travels).filter_by(travel_id=travel_id).first()
+        db.commit()
+        db.refresh(travel)
+        if not travel:
+            return JSONResponse(status_code=400, content={'message':'travel Not Found.'})
+        else:
+            return travel
+    except Exception as error:
+        print(error)
+        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
 
 
 @router.get(
@@ -62,7 +89,7 @@ def post_travels(entry_point:Travels,db:Session=Depends(get_db)):
     **Parameters:**
     travel: Travels
 
-    **Returns a json message with a message:** 
+    **Returns a json body with a message:** 
     - message: "Travel Register Successfully"
         
     """
@@ -74,5 +101,6 @@ def post_travels(entry_point:Travels,db:Session=Depends(get_db)):
         db.commit()
         db.refresh(travel)
         return JSONResponse(status_code=201, content={'message': "Travel Register Successfully"})
-    except:
-        return JSONResponse(status_code=500, content={'message': "Sorry, there is an error"})
+    except Exception as error:
+        print(error)
+        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})

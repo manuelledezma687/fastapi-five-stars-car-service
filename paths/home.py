@@ -1,20 +1,10 @@
-#Python
-import json
-from typing import List
-
-#Pydantic
-
-#FastApi
 from fastapi import status
 from fastapi import APIRouter
-
-#Native Modules
 
 
 router = APIRouter()
 
 
-## Home
 @router.get(path="/", 
          status_code=status.HTTP_200_OK , 
          summary="Home",
@@ -28,19 +18,17 @@ def home():
             Register an user.
             Update an User.
             Delete an User.
-            Show an User.
+            Show an User. --> filtrado mail, filtrado datos personales
             Show all Users.
         -Travels: 
-            Show travel.
-            Show travels by date.
+            Show travel. ---> afinar filtros
             Show all travels.
-            Show travel by CLient.
+            Post a travel.
         Bookings:
-            Show a booking.
+            Show a booking. --> filter by client by destiny
             Show all bookings.
-            Show all booking By client.
             Post a Booking.
-            Delete a Booking.
+            Delete a Booking. ---> lograr borrar delete
         -Contact: 
             Post a Form.
         -Qualifications: 

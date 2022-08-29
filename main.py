@@ -1,11 +1,4 @@
-#Python packages
-
-#Pydantic packages
-
-#FastAPI packages
 from fastapi import FastAPI
-
-#Local packages
 from paths import home, bookings, travels, users, contact
 
 app = FastAPI()
