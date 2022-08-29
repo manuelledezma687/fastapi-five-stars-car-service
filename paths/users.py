@@ -1,19 +1,17 @@
-#Python
 import json
 from typing import List
 from http import client
-#FastApi
+
 from fastapi import status
-from fastapi import Body
-from fastapi import HTTPException
+from fastapi import Path
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter
 from connections import SessionLocal,engine
 from sqlalchemy.orm import Session
 from fastapi.params import Depends
-#Native Modules
+
 import models
-from schemas.users import UserRegister, Response, UserUpdate
+from schemas.users import UserRegister, UserUpdate
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -26,22 +24,23 @@ def get_db():
     finally:
         db.close()
 
-## Users.
+
 @router.get(path="/users/{user_id}",
             response_model=UserRegister,
             status_code=status.HTTP_200_OK, 
             summary="Show a valid User",
             tags=["Users"])
-def show_user(user_id:int,db:Session=Depends(get_db)):
+def show_user(user_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     """
-    ## This path operation shows all users in the app
+    ## This path operation shows a valid user in the app
 
     **- Parameters:** 
     -
 
-    **Returns a json list with all users in the app, with the following keys:**
-    - user_id: UUID
+    **Returns a json list with a valid user in the app, with the following keys:**
+    - user_id: int PK
     - email: Emailstr
+    - telephone: int
     - username: str
     - first_name: str
     - last_name: str
@@ -49,13 +48,20 @@ def show_user(user_id:int,db:Session=Depends(get_db)):
     - country: List Optional
     - language: List Optional
     - user_since: datetime Field
-    - Status: int
+    - status: int
     
     """
-    user = db.query(models.Users).filter_by(user_id=user_id).first()
-    db.commit()
-    db.refresh(user)
-    return user
+    try:
+        user = db.query(models.Users).filter_by(user_id=user_id).first()
+        db.commit()
+        db.refresh(user)
+        if not user:
+            return JSONResponse(status_code=400, content={'message':'User Not Found.'})
+        else:
+            return user
+    except Exception as error:
+        print(error)
+        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
 
 
 @router.get(path='/users',
@@ -71,8 +77,9 @@ def show_users(db:Session=Depends(get_db)):
     -
 
     **Returns a json list with all users in the app, with the following keys:**
-    - user_id: UUID
+    - user_id: int PK
     - email: Emailstr
+    - telephone: int
     - username: str
     - first_name: str
     - last_name: str
@@ -80,7 +87,7 @@ def show_users(db:Session=Depends(get_db)):
     - country: List Optional
     - language: List Optional
     - user_since: datetime Field
-    - Status: int
+    - status: int
     
     """
     users = db.query(models.Users).all()
@@ -100,34 +107,28 @@ def create_user(entry_point:UserRegister,db:Session=Depends(get_db)):
     **This path operation register a user in the app.**
     
     **- Parameters:**
-    - Request body parameter
     - user: UserRegister
     
-    **Returns a json with the basic user information:**
-    - user_id: UUID
-    - email: Emailstr
-    - username: str
-    - first_name: str
-    - last_name: str
-    - age: int
-    - country: List Optional
-    - language: List Optional
-    - user_since: datetime Field
-    - Status: int
+    **Returns a json message with a message:** 
+    - message: "User Register Successfully"
         
     """
-    user = models.Users(email = entry_point.email, 
-                        username = entry_point.username,
-                        first_name = entry_point.first_name,
-                        last_name = entry_point.last_name,
-                        age = entry_point.age, 
-                        country = entry_point.country,
-                        language = entry_point.language,
-                        status = entry_point.status)
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+    try:
+        user = models.Users(email = entry_point.email, 
+                            telephone = entry_point.telephone,
+                            username = entry_point.username,
+                            first_name = entry_point.first_name,
+                            last_name = entry_point.last_name,
+                            age = entry_point.age, 
+                            country = entry_point.country,
+                            language = entry_point.language,
+                            status = entry_point.status)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        return JSONResponse(status_code=201, content={'message': "User Register Successfully"})
+    except:
+        return JSONResponse(status_code=500, content={'message': "Sorry, there is an error"})
 
 
 @router.put(
@@ -141,46 +142,49 @@ def update_a_user(user_id:int,entry_point:UserUpdate,db:Session=Depends(get_db))
     ## This path operation update an user in the app
 
     **- Parameters:**
-    - 
+    - user_id: int
 
-    **Returns a json list with all users in the app, with the following keys:**
-    - user_id: UUID
-    - email: Emailstr
-    - username: str
-    - first_name: str
-    - last_name: str
-    - age: int
-    - country: List Optional
-    - language: List Optional
-    - user_since: datetime Field
-    - Status: int
+    **Returns a json message with a message:** 
+    - message: "User Updated"
         
     """
-    user = db.query(models.Users).filter_by(user_id=user_id).first()
-    user.first_name = entry_point.first_name
-    db.commit()
-    db.refresh(user)
-    return user
+    try:
+        user = db.query(models.Users).filter_by(user_id=user_id).first()
+        user.first_name = entry_point.first_name
+        db.commit()
+        db.refresh(user)
+        if not user:
+            return JSONResponse(status_code=400, content={'message':'User Not Found.'})
+        else:
+            return JSONResponse(status_code=200, content={'message': "User was Updated"})
+    except Exception as error:
+        print(error)
+        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
 
 
 @router.delete('/users/{user_id}',
-               response_model=Response,
                status_code=status.HTTP_200_OK, 
                summary="Delete an user",
                tags=["Users"])
-def delete_users(user_id:int,db:Session=Depends(get_db)):
+def delete_users(user_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     """
     ## This path operation delete an user in the app
 
     **- Parameters:**
-    - 
+    - user_id: int
 
     **Returns a json message with a message:** 
     - message: "User Deleted"
         
     """
-    user = db.query(models.Users).filter_by(user_id=user_id).first()
-    db.delete(user)
-    db.commit()
-    response = Response(message="User Deleted.")
-    return response ## añadir validación 404
+    try:
+        user = db.query(models.Users).filter_by(user_id=user_id).first()
+        db.delete(user)
+        db.commit()
+        if not user:
+            return JSONResponse(status_code=400, content={'message':'User Not Found.'})
+        else:
+            return JSONResponse(status_code=200, content={'message': "User was deleted"})
+    except Exception as error:
+        print(error)
+        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})

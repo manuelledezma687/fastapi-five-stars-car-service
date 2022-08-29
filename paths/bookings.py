@@ -1,31 +1,37 @@
-#Python
 import json
-from typing import List,Optional
+from typing import List
 from http import client
 
-#Pydantic
-
-#FastApi
 from fastapi import status
-from fastapi import Body, Path
-from fastapi import HTTPException
+from fastapi import Path
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter
+from connections import SessionLocal,engine
+from sqlalchemy.orm import Session
+from fastapi.params import Depends
 
-#Native Modules
-from schemas.Bookings import *
+import models
+from schemas.bookings import Bookings
 
+models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter()
 
+def get_db():
+    try:
+        db = SessionLocal()
+        yield db
+    finally:
+        db.close()
 
-## Bookings.
+
 @router.get(
     path="/bookings",
+    response_model=List[Bookings],
     status_code=status.HTTP_200_OK,
     summary="Show All Bookings",
     tags=["Bookings"])
-def show_bookings():
+def show_bookings(db:Session=Depends(get_db)):
     """
     ## This path operation shows all bookings in the app.
 
@@ -33,19 +39,18 @@ def show_bookings():
     -
 
     **Returns a json list with all bookings in the app, with the following keys:**
-    - booking_id: UUID
-    - user_id: UUID
-    - email: EmailStr
-    - username: str
-    - Destiny: str
-    - Telephone: int
+    - booking_id: int Primary Key
+    - user_id: int FK
+    - destiny: str
+    - payment_method: str
     - amount_of_booking: float
     - created_at: datetime Field
+    - status: int
                 
     """
-    with open("data/bookings.json", "r+", encoding="utf-8") as f: 
-        results = json.loads(f.read())
-        return results
+    bookings= db.query(models.Bookings).all()
+    return bookings
+
 
 @router.post(
     path="/bookings",
@@ -53,53 +58,52 @@ def show_bookings():
     status_code=status.HTTP_201_CREATED,
     summary="Post a booking",
     tags=["Bookings"])
-def post_booking(booking: Bookings=Body(...)):
+def post_booking(entry_point:Bookings,db:Session=Depends(get_db)):
     """
     ## This path operation post a booking in the app.
 
-    **Parameters:**
-    bookings: Bookings
+    **- Parameters:**
+    - booking: Bookings
 
-    **Returns a created booking in the app, with the following keys:**
-    - booking_id: UUID
-    - user_id: UUID
-    - email: EmailStr
-    - username: str
-    - Destiny: str
-    - Telephone: int
-    - amount_of_booking: float
-    - created_at: datetime Field
+    **Returns a json message with a message:** 
+    - message: "Booking Saved successfully"
 
     """
-    with open("data/bookings.json", "r+", encoding="utf-8") as f: 
-        results = json.loads(f.read())
-        bookings_dict = booking.dict()
-        bookings_dict["user_id"] = str(bookings_dict["user_id"])
-        bookings_dict["booking_id"] = str(bookings_dict["booking_id"])
-        bookings_dict["created_at"] = str(bookings_dict["created_at"])
-        results.append(bookings_dict)
-        f.seek(0)
-        f.write(json.dumps(results))
-        return booking
-    
+    try:
+        booking = models.Bookings(user_id = entry_point.user_id,
+                                  destiny = entry_point.destiny,
+                                  payment_method = entry_point.payment_method,
+                                  amount_of_booking = entry_point.amount_of_booking,
+                                  created_at = entry_point.created_at,
+                                  status = entry_point.status)
+        db.add(booking)
+        db.commit()
+        db.refresh(booking)
+        return JSONResponse(status_code=201, content={'message': "Booking Saved successfully"})
+    except:
+        return JSONResponse(status_code=500, content={'message': "Sorry, there is an error"})
+
+
 @router.delete(
     path="/bookings/{booking_id}",
     status_code=status.HTTP_200_OK,
     summary="Delete a Booking",
     tags=["Bookings"])
-def delete_booking(booking_id):
+def delete_booking(booking_id:int= Path(...,gt=0),db:Session=Depends(get_db)):
     """
     ## This path operation delete a booking in the app.
 
-    **Parameters:**
-    booking_id: UUID
+    **- Parameters:**
+    - booking_id: int
 
-    **Returns a json Response with the result for this operation.**
+    **Returns a json message with a message:** 
+    - message: "Booking Deleted"
 
     """
     try:
+        booking = db.query(models.Bookings).filter_by(booking_id=booking_id).first()
+        db.delete(booking)
+        db.commit()
         return JSONResponse(status_code=200, content={'message': "Your Booking was deleted"})
-    except Exception as error:
-        print(error)
-        return JSONResponse(status_code=500, content={'message': "Sorry, We found an error"})
-
+    except:
+        return JSONResponse(status_code=500, content={'message': "Sorry, there is an error"})

@@ -11,6 +11,10 @@ class UserRegister(BaseModel):
     email: EmailStr = Field(
         ...,
         example="testing@gmail.com")
+    telephone: int = Field(
+        ...,
+        example=1123322345
+        )
     username: str = Field(
         ...,
         max_length=20,
@@ -36,7 +40,7 @@ class UserRegister(BaseModel):
         )
     country: str = Field (min_length=4, max_length=20, example="Argentina")
     language: str = Field (min_length=4,max_length=20, example="Español")
-    #user_since: Optional[datetime] = Field(default=datetime.now())
+    user_since: Optional[datetime] = Field(default=datetime.now())
     status: int = Field(default=1)
         
     class Config:

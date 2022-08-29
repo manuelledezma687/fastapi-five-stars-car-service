@@ -13,7 +13,7 @@ from fastapi.responses import JSONResponse
 from fastapi import APIRouter
 
 #Native Modules
-from schemas.Contact import Contact
+from schemas.contact import Contact
 
 
 router = APIRouter()
