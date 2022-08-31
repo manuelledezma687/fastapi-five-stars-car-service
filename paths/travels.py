@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import status
-from fastapi import Path
+from fastapi import Path, Query
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter
 from connections import SessionLocal,engine
@@ -43,13 +43,10 @@ def show_travel(travel_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
         travel = db.query(models.Travels).filter_by(travel_id=travel_id).first()
         db.commit()
         db.refresh(travel)
-        if not travel:
-            return JSONResponse(status_code=400, content={'message':'travel Not Found.'})
-        else:
-            return travel
+        return travel
     except Exception as error:
         print(error)
-        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
+        return JSONResponse(status_code=404, content={'message':'travel Not Found.'})
 
 
 @router.get(
@@ -58,7 +55,7 @@ def show_travel(travel_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     status_code=status.HTTP_200_OK,
     summary="Show All travels",
     tags=["Travels"])
-def show_travels(db:Session=Depends(get_db)):
+def show_travels(db:Session=Depends(get_db),skip: int = Query(default=0) , limit: int = Query(default=10)):
     """
     ## This path operation shows all travels in the app.
 
@@ -73,7 +70,7 @@ def show_travels(db:Session=Depends(get_db)):
                 
     """
     travels= db.query(models.Travels).all()
-    return travels
+    return travels[skip: skip+limit]
 
 
 @router.post(

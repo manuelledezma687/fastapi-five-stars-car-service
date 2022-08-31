@@ -1,6 +1,7 @@
 from typing import List
+from typing import Union
 from fastapi import status
-from fastapi import Path
+from fastapi import Path, Query
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter
 from connections import SessionLocal,engine
@@ -48,13 +49,10 @@ def show_booking(booking_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
         booking = db.query(models.Bookings).filter_by(booking_id=booking_id).first()
         db.commit()
         db.refresh(booking)
-        if not booking:
-            return JSONResponse(status_code=400, content={'message':'booking Not Found.'})
-        else:
-            return booking
+        return booking
     except Exception as error:
         print(error)
-        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
+        return JSONResponse(status_code=404, content={'message':'booking Not Found.'})
     
     
 @router.get(
@@ -63,7 +61,11 @@ def show_booking(booking_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     status_code=status.HTTP_200_OK,
     summary="Show All Bookings",
     tags=["Bookings"])
-def show_bookings(db:Session=Depends(get_db)):
+def show_bookings(db:Session=Depends(get_db), 
+                  user_id: int = Query(default=1), 
+                  amount_of_booking: int = Query(default=0),
+                  destiny: str = Query(default="Miami"),
+                  skip: int = Query(default=0) , limit: Union[int, None] = None):
     """
     ## This path operation shows all bookings in the app.
 
@@ -82,7 +84,6 @@ def show_bookings(db:Session=Depends(get_db)):
     """
     bookings= db.query(models.Bookings).all()
     return bookings
-
 
 @router.post(
     path="/bookings",
@@ -137,5 +138,6 @@ def delete_booking(booking_id:int= Path(...,gt=0),db:Session=Depends(get_db)):
         db.delete(booking)
         db.commit()
         return JSONResponse(status_code=200, content={'message': "Your Booking was deleted"})
-    except:
-        return JSONResponse(status_code=500, content={'message': "Sorry, there is an error"})
+    except Exception as error:
+        print(error)
+        return JSONResponse(status_code=404, content={'message':'booking Not Found.'})

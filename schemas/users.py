@@ -10,7 +10,7 @@ class UserRegister(BaseModel):
     user_id: Optional[int]
     email: EmailStr = Field(
         ...,
-        example="testing@gmail.com")
+        example="joseotero@gmail.com")
     telephone: int = Field(
         ...,
         example=1123322345
@@ -18,19 +18,19 @@ class UserRegister(BaseModel):
     username: str = Field(
         ...,
         max_length=20,
-        example="Manuel"
+        example="jose2013"
         )
     first_name: str = Field(
         ...,
         min_length=0,
         max_length=20,
-        example="Manuel"
+        example="Jose"
         )
     last_name: str = Field(
         ...,
         min_length=0,
         max_length=20,
-        example="Ledezma"
+        example="Otero"
         )
     age: int = Field(
         ...,

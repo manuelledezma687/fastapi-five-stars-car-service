@@ -18,29 +18,26 @@ def home():
             Register an user.
             Update an User.
             Delete an User.
-            Show an User. --> filtrado mail, filtrado datos personales
+            Show an User.
             Show all Users.
         -Travels: 
-            Show travel. ---> afinar filtros
+            Show travel. 
             Show all travels.
             Post a travel.
         Bookings:
-            Show a booking. --> filter by client by destiny
+            Show a booking. 
             Show all bookings.
             Post a Booking.
-            Delete a Booking. ---> lograr borrar delete
+            Delete a Booking.
         -Contact: 
             Post a Form.
-        -Qualifications: 
-            Show all qualifications
-            Show a qualification
-            Post a qualification
-        -Reports:
-            By date.
-            By User.
-            By destiny.
-            By rate.
-        -Rewards:
+        -ratings: 
+            Show all ratings
+            Show all ratings per stars
+            Show all ratings per users
+            Show a rating per id
+            Post a rating
+        -Rewards: In Definition
             Discounts.
             Referrals.
             

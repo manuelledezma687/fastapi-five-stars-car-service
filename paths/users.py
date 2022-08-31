@@ -1,6 +1,7 @@
 from typing import List
+from typing import Union
 from fastapi import status
-from fastapi import Path
+from fastapi import Path, Query
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter
 from connections import SessionLocal,engine
@@ -51,13 +52,10 @@ def show_user(user_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
         user = db.query(models.Users).filter_by(user_id=user_id).first()
         db.commit()
         db.refresh(user)
-        if not user:
-            return JSONResponse(status_code=400, content={'message':'User Not Found.'})
-        else:
-            return user
+        return user
     except Exception as error:
         print(error)
-        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
+        return JSONResponse(status_code=404, content={'message':'User Not Found.'})
 
 
 @router.get(path='/users',
@@ -65,7 +63,10 @@ def show_user(user_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
             status_code=status.HTTP_200_OK, 
             summary="Show Users",
             tags=["Users"])
-def show_users(db:Session=Depends(get_db)):
+def show_users(db:Session=Depends(get_db),
+               username: str | None= Query(default="name"), 
+               skip: int | None= Query(default=0) ,
+               limit: int| None = Query(default=10)):
     """
     ## This path operation shows all users in the app
 
@@ -87,7 +88,7 @@ def show_users(db:Session=Depends(get_db)):
     
     """
     users = db.query(models.Users).all()
-    return users
+    return users [skip: skip + limit]
 
 
 @router.post(
@@ -118,6 +119,7 @@ def create_user(entry_point:UserRegister,db:Session=Depends(get_db)):
                             age = entry_point.age, 
                             country = entry_point.country,
                             language = entry_point.language,
+                            user_since = entry_point.user_since,
                             status = entry_point.status)
         db.add(user)
         db.commit()
@@ -125,7 +127,7 @@ def create_user(entry_point:UserRegister,db:Session=Depends(get_db)):
         return JSONResponse(status_code=201, content={'message': "User Register Successfully"})
     except Exception as error:
         print(error)
-        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
+        return JSONResponse(status_code=400, content={'message':'Bad request.'})
 
 
 @router.put(
@@ -152,13 +154,10 @@ def update_a_user(user_id:int,entry_point:UserUpdate,db:Session=Depends(get_db))
         user.language= entry_point.language
         db.commit()
         db.refresh(user)
-        if not user:
-            return JSONResponse(status_code=400, content={'message':'User Not Found.'})
-        else:
-            return JSONResponse(status_code=200, content={'message': "User was Updated"})
+        return JSONResponse(status_code=200, content={'message': "User was Updated"})
     except Exception as error:
         print(error)
-        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
+        return JSONResponse(status_code=404, content={'message':'User Not Found.'})
 
 
 @router.delete('/users/{user_id}',
@@ -180,10 +179,7 @@ def delete_users(user_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
         user = db.query(models.Users).filter_by(user_id=user_id).first()
         db.delete(user)
         db.commit()
-        if not user:
-            return JSONResponse(status_code=400, content={'message':'User Not Found.'})
-        else:
-            return JSONResponse(status_code=200, content={'message': "User was deleted"})
+        return JSONResponse(status_code=200, content={'message': "User was deleted"})
     except Exception as error:
         print(error)
-        return JSONResponse(status_code=500, content={'message': 'Sorry, there is an error'})
+        return JSONResponse(status_code=404, content={'message':'User Not Found.'})

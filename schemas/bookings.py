@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 class Bookings(BaseModel):
     booking_id: Optional[int] = Field(gt=0)
-    user_id: int = Field(gt=0)
+    user_id: int = Field(...,gt=0)
     destiny: str = Field(
         ...,
         min_length=0,
