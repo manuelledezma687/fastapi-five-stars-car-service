@@ -19,26 +19,26 @@ class Users(Base):
 class Bookings(Base):
     __tablename__ = 'bookings'
     booking_id = Column(Integer,primary_key=True,index=True)
-    user_id = Column(Integer, ForeignKey("users.user_id"))
-    destiny = Column(String(20))
+    type_of_travel = Column(String(20))
+    pick_up_location = Column(String(20))
+    drop_off_location = Column(String(20))
+    flight_id = Column(String(20))
+    passengers = Column(Integer)
+    full_name = Column(String(30))
+    email = Column(String(20))
+    observations = Column(String(200))
     payment_method = Column(String(20))
     amount_of_booking = Column(Integer)
-    created_at = Column(String(50))
-    status = Column(Integer)
-    
-class Travels(Base):
-    __tablename__ = 'travels'
-    travel_id = Column(Integer,primary_key=True,index=True)
-    booking_id = Column(Integer, ForeignKey("bookings.booking_id"))
     created_at = Column(String(50))
     status = Column(Integer)
     
 class Ratings(Base):
     __tablename__ = 'ratings'
     rating_id = Column(Integer,primary_key=True,index=True)
-    user_id = Column(Integer, ForeignKey("users.user_id"))
-    travel_id = Column(Integer, ForeignKey("travels.travel_id"))
+    booking_id = Column(Integer, ForeignKey("bookings.booking_id"))
     stars = Column(Integer)
+    first_name = Column(String(20))
+    last_name = Column(String(20))
     comments = Column(String(140))
     created_at = Column(String(50))
     status = Column(Integer)

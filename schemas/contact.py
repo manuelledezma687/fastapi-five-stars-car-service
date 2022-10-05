@@ -12,7 +12,7 @@ class Contact(BaseModel):
         ...,
         example="testing@gmail.com"
         )
-    comments: str = Field(
+    message: str = Field(
         ...,
         max_length=100,
         example="Hi i want to make a reservation."

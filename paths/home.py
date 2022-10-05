@@ -11,7 +11,7 @@ router = APIRouter()
          tags=["Five Stars Car Service"])
 def home():
     """
-    # Five Stars CAR SERVICE.
+    # FIVE STARS CAR SERVICE.
     ## Web EndPoints:
         -Users: 
             Login.
@@ -20,10 +20,6 @@ def home():
             Delete an User.
             Show an User.
             Show all Users.
-        -Travels: 
-            Show travel. 
-            Show all travels.
-            Post a travel.
         Bookings:
             Show a booking. 
             Show all bookings.
@@ -33,13 +29,8 @@ def home():
             Post a Form.
         -ratings: 
             Show all ratings
-            Show all ratings per stars
-            Show all ratings per users
             Show a rating per id
             Post a rating
-        -Rewards: In Definition
-            Discounts.
-            Referrals.
             
     """
     return "Welcome to Five Stars CAR SERVICE"

@@ -3,16 +3,49 @@ from enum import Enum
 from datetime import date
 from datetime import datetime
 from pydantic import BaseModel, Field
-
+from pydantic import EmailStr
 
 class Bookings(BaseModel):
     booking_id: Optional[int] = Field(gt=0)
-    user_id: int = Field(...,gt=0)
-    destiny: str = Field(
+    type_of_travel: str = Field(
+        ...,
+        min_length=0,
+        max_length=20,
+        example="hourly"
+        )
+    pick_up_location: str = Field(
+        ...,
+        min_length=0,
+        max_length=20,
+        example="Atlanta Airport"
+        )
+    drop_off_location: str = Field(
         ...,
         min_length=0,
         max_length=20,
         example="Miami"
+        )
+    flight_id: str = Field(
+        ...,
+        min_length=0,
+        max_length=20,
+        example="MSE2123"
+        )
+    passengers: int = Field (...,gt=0, example=3)
+    full_name: str = Field(
+        ...,
+        min_length=0,
+        max_length=30,
+        example="Mike Adams"
+        )
+    email: EmailStr = Field(
+        ...,
+        example="joseotero@gmail.com")
+    observations: str = Field(
+        ...,
+        min_length=10,
+        max_length=200,
+        example="Hi, this is a comment."
         )
     payment_method: str = Field(
         ...,

@@ -20,7 +20,7 @@ def contact(
         min_length=5,
         max_length=20),
     email: EmailStr = Form(...), 
-    comments: str =Form(
+    message: str =Form(
         ...,
         min_length=5,
         max_length=250)):

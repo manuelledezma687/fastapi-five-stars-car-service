@@ -103,11 +103,17 @@ def post_booking(entry_point:Bookings,db:Session=Depends(get_db)):
 
     """
     try:
-        booking = models.Bookings(user_id = entry_point.user_id,
-                                  destiny = entry_point.destiny,
+        booking = models.Bookings(type_of_travel = entry_point.type_of_travel,
+                                  pick_up_location = entry_point.pick_up_location,
+                                  drop_off_location = entry_point.drop_off_location,
+                                  flight_id = entry_point.flight_id,      
+                                  passengers = entry_point.passengers,
+                                  full_name = entry_point.full_name,
+                                  email = entry_point.email,
+                                  observations = entry_point.observations,
                                   payment_method = entry_point.payment_method,
                                   amount_of_booking = entry_point.amount_of_booking,
-                                  created_at = entry_point.created_at,
+                                  created_at =entry_point.created_at,
                                   status = entry_point.status)
         db.add(booking)
         db.commit()
@@ -140,4 +146,4 @@ def delete_booking(booking_id:int= Path(...,gt=0),db:Session=Depends(get_db)):
         return JSONResponse(status_code=200, content={'message': "Your Booking was deleted"})
     except Exception as error:
         print(error)
-        return JSONResponse(status_code=404, content={'message':'booking Not Found.'})
+        return JSONResponse(status_code=500, content={'message': "Sorry, there is an error"})

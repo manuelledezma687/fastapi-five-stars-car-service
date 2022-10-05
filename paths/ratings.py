@@ -100,9 +100,10 @@ def post_rating(entry_point:Ratings,db:Session=Depends(get_db)):
         
     """
     try:
-        rating = models.Ratings(user_id = entry_point.user_id,
-                                travel_id = entry_point.travel_id, 
+        rating = models.Ratings(booking_id = entry_point.booking_id, 
                                 stars = entry_point.stars,
+                                first_name = entry_point.first_name,
+                                last_name = entry_point.last_name,
                                 comments = entry_point.comments,
                                 created_at = entry_point.created_at,
                                 status = entry_point.status)
