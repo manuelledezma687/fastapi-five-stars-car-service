@@ -59,8 +59,12 @@ def show_rating(rating_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
             status_code=status.HTTP_200_OK, 
             summary="Show Ratings",
             tags=["Ratings"])
-def show_ratings(db:Session=Depends(get_db),skip: int = Query(default=0) , limit: Union[int, None] = None):
-    """
+def show_ratings(db:Session=Depends(get_db),
+                 skip: int | None= Query(default=0),
+                 limit: int| None = Query(default=10)):
+    
+    """                                      
+               
     ## This path operation shows all ratings in the app
 
     **- Parameters:** 
@@ -77,7 +81,7 @@ def show_ratings(db:Session=Depends(get_db),skip: int = Query(default=0) , limit
     
     """
     ratings = db.query(models.Ratings).all()
-    return ratings
+    return ratings[skip: skip + limit]
 
 
 @router.post(
