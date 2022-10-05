@@ -59,10 +59,7 @@ def show_rating(rating_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
             status_code=status.HTTP_200_OK, 
             summary="Show Ratings",
             tags=["Ratings"])
-def show_ratings(db:Session=Depends(get_db), 
-                 stars: int=Query(gt=0, le=5),
-                 user_id: int=Query(gt=0), 
-                 skip: int = Query(default=0) , limit: Union[int, None] = None):
+def show_ratings(db:Session=Depends(get_db),skip: int = Query(default=0) , limit: Union[int, None] = None):
     """
     ## This path operation shows all ratings in the app
 
