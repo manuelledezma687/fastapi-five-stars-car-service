@@ -23,7 +23,7 @@ class Ratings(BaseModel):
     comments: str = Field(
         ...,
         min_length=0,
-        max_length=140,
+        max_length=50,
         example="Hi it is a excelent service."
         )
     created_at: datetime = Field(default=datetime.now())

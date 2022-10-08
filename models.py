@@ -39,6 +39,6 @@ class Ratings(Base):
     stars = Column(Integer)
     first_name = Column(String(20))
     last_name = Column(String(20))
-    comments = Column(String(140))
+    comments = Column(String(50))
     created_at = Column(String(50))
     status = Column(Integer)
