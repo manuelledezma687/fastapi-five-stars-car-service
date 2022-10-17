@@ -64,7 +64,6 @@ def show_user(user_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
             summary="Show Users",
             tags=["Users"])
 def show_users(db:Session=Depends(get_db),
-               username: str | None= Query(default="name"), 
                skip: int | None= Query(default=0) ,
                limit: int| None = Query(default=10)):
     """

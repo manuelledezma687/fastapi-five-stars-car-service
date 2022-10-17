@@ -13,9 +13,19 @@ app.include_router(users.router)
 app.include_router(contact.router)
 
 
+
+origins = [
+    'http://localhost:5173/',
+    'https://fivestars.bibliotecadeltester.org/',
+    'https://fivestarscarservice.com/',
+    '*'    
+]
+    
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins='http://localhost:5173/',
+    allow_origins= origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

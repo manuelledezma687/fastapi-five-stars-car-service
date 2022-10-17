@@ -30,7 +30,6 @@ class Bookings(Base):
     payment_method = Column(String(20))
     amount_of_booking = Column(Integer)
     created_at = Column(String(50))
-    status = Column(Integer)
     
 class Ratings(Base):
     __tablename__ = 'ratings'
@@ -41,4 +40,3 @@ class Ratings(Base):
     last_name = Column(String(20))
     comments = Column(String(50))
     created_at = Column(String(50))
-    status = Column(Integer)

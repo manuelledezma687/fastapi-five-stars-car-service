@@ -27,7 +27,6 @@ class Ratings(BaseModel):
         example="Hi it is a excelent service."
         )
     created_at: datetime = Field(default=datetime.now())
-    status: int = Field(default=1)
     
     class Config:
         orm_mode =True

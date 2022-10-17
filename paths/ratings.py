@@ -36,12 +36,12 @@ def show_rating(rating_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
 
     **Returns a json with a valid rating in the app, with the following keys:**
     - rating_id: int Primary Key
-    - user_id: int FR
-    - travel_id: int FR
+    - booking_id: int FR
     - stars: int
+    - first_name: str
+    - last_nam: str
     - comments: str
     - created_at: datetime Field
-    - status: int
     
     """
     try:
@@ -72,13 +72,14 @@ def show_ratings(db:Session=Depends(get_db),
 
     **Returns a json list with all ratings in the app, with the following keys:**
     - rating_id: int Primary Key
-    - user_id: int FR
-    - travel_id: int FR
+    - booking_id: int FR
     - stars: int
+    - first_name: str
+    - last_nam: str
     - comments: str
     - created_at: datetime Field
-    - status: int
     
+
     """
     ratings = db.query(models.Ratings).all()
     return ratings[skip: skip + limit]
@@ -109,8 +110,7 @@ def post_rating(entry_point:Ratings,db:Session=Depends(get_db)):
                                 first_name = entry_point.first_name,
                                 last_name = entry_point.last_name,
                                 comments = entry_point.comments,
-                                created_at = entry_point.created_at,
-                                status = entry_point.status)
+                                created_at = entry_point.created_at)
         db.add(rating)
         db.commit()
         db.refresh(rating)

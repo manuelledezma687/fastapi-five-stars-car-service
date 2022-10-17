@@ -36,13 +36,17 @@ def show_booking(booking_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     - booking_id: int
 
     **Returns a json with a valid booking in the app, with the following keys:**
-    - booking_id: int Primary Key
-    - user_id: int FK
-    - destiny: str
-    - payment_method: str
+    - type_of_travel: str
+    - pick_up_location: str
+    - drop_off_location : str
+    - flight_id : str     
+    - passengers : int
+    - full_name : str
+    - email : EmailStr
+    - observations : str
+    - payment_method : str
     - amount_of_booking: float
     - created_at: datetime Field
-    - status: int
                
     """
     try:
@@ -73,13 +77,17 @@ def show_bookings(db:Session=Depends(get_db),
     -
 
     **Returns a json list with all bookings in the app, with the following keys:**
-    - booking_id: int Primary Key
-    - user_id: int FK
-    - destiny: str
-    - payment_method: str
+    - type_of_travel: str
+    - pick_up_location: str
+    - drop_off_location : str
+    - flight_id : str     
+    - passengers : int
+    - full_name : str
+    - email : EmailStr
+    - observations : str
+    - payment_method : str
     - amount_of_booking: float
     - created_at: datetime Field
-    - status: int
                 
     """
     bookings= db.query(models.Bookings).all()
@@ -113,8 +121,7 @@ def post_booking(entry_point:Bookings,db:Session=Depends(get_db)):
                                   observations = entry_point.observations,
                                   payment_method = entry_point.payment_method,
                                   amount_of_booking = entry_point.amount_of_booking,
-                                  created_at =entry_point.created_at,
-                                  status = entry_point.status)
+                                  created_at =entry_point.created_at)
         db.add(booking)
         db.commit()
         db.refresh(booking)
