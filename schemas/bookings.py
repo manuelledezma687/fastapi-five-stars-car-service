@@ -16,13 +16,13 @@ class Bookings(BaseModel):
     pick_up_location: str = Field(
         ...,
         min_length=0,
-        max_length=20,
+        max_length=150,
         example="Atlanta Airport"
         )
     drop_off_location: str = Field(
         ...,
         min_length=0,
-        max_length=20,
+        max_length=150,
         example="Miami"
         )
     flight_id: str = Field(
@@ -53,7 +53,18 @@ class Bookings(BaseModel):
         max_length=20,
         example="Cash"
         )
-    amount_of_booking: int = Field (...,gt=20, example=300)
+    date: str = Field(
+        ...,
+        min_length=0,
+        max_length=20,
+        example="05/05/2022"
+        )
+    hour: str = Field(
+        ...,
+        min_length=0,
+        max_length=20,
+        example="01:00"
+        )
     created_at: datetime = Field(default=datetime.now())
     status: int = Field(default=1)
     

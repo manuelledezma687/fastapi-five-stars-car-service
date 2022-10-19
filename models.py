@@ -20,15 +20,16 @@ class Bookings(Base):
     __tablename__ = 'bookings'
     booking_id = Column(Integer,primary_key=True,index=True)
     type_of_travel = Column(String(20))
-    pick_up_location = Column(String(20))
-    drop_off_location = Column(String(20))
+    pick_up_location = Column(String(150))
+    drop_off_location = Column(String(150))
     flight_id = Column(String(20))
     passengers = Column(Integer)
     full_name = Column(String(30))
     email = Column(String(20))
     observations = Column(String(200))
     payment_method = Column(String(20))
-    amount_of_booking = Column(Integer)
+    date = Column(String(20))
+    hour = Column(String(20))
     created_at = Column(String(50))
     
 class Ratings(Base):
