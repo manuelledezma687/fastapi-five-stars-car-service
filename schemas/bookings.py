@@ -7,10 +7,9 @@ from pydantic import EmailStr
 
 class Bookings(BaseModel):
     booking_id: Optional[int] = Field(gt=0)
-    type_of_travel: str = Field(
+    type_of_service: str = Field(
         ...,
         min_length=0,
-        max_length=20,
         example="hourly"
         )
     pick_up_location: str = Field(
@@ -42,8 +41,6 @@ class Bookings(BaseModel):
         ...,
         example="joseotero@gmail.com")
     observations: str = Field(
-        ...,
-        min_length=10,
         max_length=200,
         example="Hi, this is a comment."
         )

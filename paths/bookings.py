@@ -36,7 +36,7 @@ def show_booking(booking_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     - booking_id: int
 
     **Returns a json with a valid booking in the app, with the following keys:**
-    - type_of_travel: str
+    - type_of_service: str
     - pick_up_location: str
     - drop_off_location : str
     - flight_id : str     
@@ -76,7 +76,7 @@ def show_bookings(db:Session=Depends(get_db),
     -
 
     **Returns a json list with all bookings in the app, with the following keys:**
-    - type_of_travel: str
+    - type_of_service: str
     - pick_up_location: str
     - drop_off_location : str
     - flight_id : str     
@@ -112,7 +112,7 @@ def post_booking(entry_point:Bookings,db:Session=Depends(get_db)):
 
     """
     try:
-        booking = models.Bookings(type_of_travel = entry_point.type_of_travel,
+        booking = models.Bookings(type_of_service = entry_point.type_of_service,
                                   pick_up_location = entry_point.pick_up_location,
                                   drop_off_location = entry_point.drop_off_location,
                                   flight_id = entry_point.flight_id,      

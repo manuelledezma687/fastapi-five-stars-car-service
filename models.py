@@ -19,7 +19,7 @@ class Users(Base):
 class Bookings(Base):
     __tablename__ = 'bookings'
     booking_id = Column(Integer,primary_key=True,index=True)
-    type_of_travel = Column(String(20))
+    type_of_service = Column(String(20))
     pick_up_location = Column(String(150))
     drop_off_location = Column(String(150))
     flight_id = Column(String(20))
