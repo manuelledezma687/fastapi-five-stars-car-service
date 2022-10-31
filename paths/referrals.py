@@ -49,7 +49,7 @@ def show_referral(referral_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
         referral = db.query(models.Referrals).filter_by(referral_id=referral_id).first()
         db.commit()
         db.refresh(referral)
-        return referral_id
+        return referral
     except Exception as error:
         print(error)
         return JSONResponse(status_code=404, content={'message':'Referral Not Found.'})
@@ -101,11 +101,10 @@ def post_referral(entry_point:Referrals,db:Session=Depends(get_db)):
     try:
         referral = models.Referrals(referral_code = entry_point.referral_code,
                                     email = entry_point.email,
-                                    observations = entry_point.observations,
                                     telephone = entry_point.telephone,
                                     first_name = entry_point.first_name,
                                     last_name = entry_point.last_name,
-                                    user_since =entry_point.user_since
+                                    user_since =entry_point.user_since,
                                     status = entry_point.status)
         db.add(referral)
         db.commit()

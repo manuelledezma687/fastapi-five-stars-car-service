@@ -30,7 +30,7 @@ class Bookings(Base):
     payment_method = Column(String(20))
     date = Column(String(20))
     hour = Column(String(20))
-    referral_code = Column(String, ForeignKey("referrals.referral_code"))
+    referral = Column(String(20))  ## resolver la relacion con la tabla y el codigo unico
     created_at = Column(String(50))
     
 class Ratings(Base):

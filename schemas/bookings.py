@@ -62,7 +62,7 @@ class Bookings(BaseModel):
         max_length=20,
         example="01:00"
         )
-    referral_code: str = Field(
+    referral: str = Field(
         min_length=0,
         max_length=20,
         example="MCLKD123"

@@ -125,7 +125,7 @@ def post_booking(entry_point:Bookings,db:Session=Depends(get_db)):
                                   payment_method = entry_point.payment_method,
                                   date = entry_point.date,
                                   hour = entry_point.hour,
-                                  referral_code = entry_point.referral_code
+                                  referral = entry_point.referral,
                                   created_at =entry_point.created_at)
         db.add(booking)
         db.commit()
