@@ -30,6 +30,7 @@ class Bookings(Base):
     payment_method = Column(String(20))
     date = Column(String(20))
     hour = Column(String(20))
+    referral_code = Column(String, ForeignKey("referrals.referral_code"))
     created_at = Column(String(50))
     
 class Ratings(Base):
@@ -41,3 +42,14 @@ class Ratings(Base):
     last_name = Column(String(20))
     comments = Column(String(50))
     created_at = Column(String(50))
+    
+class Referrals(Base):
+    __tablename__ = 'referrals'
+    referral_id = Column(Integer,primary_key=True,index=True)
+    referral_code = Column(String(20))
+    email = Column(String(30))
+    telephone = Column(Integer)
+    first_name = Column(String(20))
+    last_name = Column(String(20))
+    user_since = Column(String(50))
+    status = Column(Integer)

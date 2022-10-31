@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from paths import home, bookings, users, contact, ratings
+from paths import home, bookings, users, contact, referrals, ratings
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import status
 
@@ -10,6 +10,7 @@ app.include_router(home.router)
 app.include_router(bookings.router)
 app.include_router(ratings.router)
 app.include_router(users.router)
+app.include_router(referrals.router)
 app.include_router(contact.router)
 
 

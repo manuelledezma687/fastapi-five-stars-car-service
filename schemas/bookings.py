@@ -62,6 +62,11 @@ class Bookings(BaseModel):
         max_length=20,
         example="01:00"
         )
+    referral_code: str = Field(
+        min_length=0,
+        max_length=20,
+        example="MCLKD123"
+        )
     created_at: datetime = Field(default=datetime.now())
     status: int = Field(default=1)
     
