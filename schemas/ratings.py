@@ -1,5 +1,4 @@
 from typing import Optional
-from datetime import date
 from datetime import datetime
 from pydantic import BaseModel, Field
 
@@ -27,6 +26,6 @@ class Ratings(BaseModel):
         example="Hi it is a excelent service."
         )
     created_at: datetime = Field(default=datetime.now())
-    
+
     class Config:
         orm_mode =True

@@ -1,14 +1,14 @@
 from typing import List
-from typing import Union
 from fastapi import status
 from fastapi import Path, Query
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter
-from connections import SessionLocal,engine
-from sqlalchemy.orm import Session
 from fastapi.params import Depends
+from sqlalchemy.orm import Session
 import models
 from schemas.ratings import Ratings
+from connections import SessionLocal,engine
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -24,16 +24,14 @@ def get_db():
 
 @router.get(path="/ratings/{rating_id}",
             response_model=Ratings,
-            status_code=status.HTTP_200_OK, 
+            status_code=status.HTTP_200_OK,
             summary="Show a valid Rating",
             tags=["Ratings"])
 def show_rating(rating_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     """
     ## This path operation shows a valid rating in the app
-
-    **- Parameters:** 
+    **- Parameters:**
     - rating_id : int
-
     **Returns a json with a valid rating in the app, with the following keys:**
     - rating_id: int Primary Key
     - booking_id: int FR
@@ -42,7 +40,6 @@ def show_rating(rating_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
     - last_nam: str
     - comments: str
     - created_at: datetime Field
-    
     """
     try:
         rating = db.query(models.Ratings).filter_by(rating_id=rating_id).first()
@@ -56,20 +53,16 @@ def show_rating(rating_id:int = Path(...,gt=0),db:Session=Depends(get_db)):
 
 @router.get(path='/ratings',
             response_model=List[Ratings],
-            status_code=status.HTTP_200_OK, 
+            status_code=status.HTTP_200_OK,
             summary="Show Ratings",
             tags=["Ratings"])
 def show_ratings(db:Session=Depends(get_db),
                  skip: int | None= Query(default=0),
                  limit: int| None = Query(default=10)):
-    
-    """                                      
-               
+    """
     ## This path operation shows all ratings in the app
-
-    **- Parameters:** 
+    **- Parameters:**
     -
-
     **Returns a json list with all ratings in the app, with the following keys:**
     - rating_id: int Primary Key
     - booking_id: int FR
@@ -78,34 +71,28 @@ def show_ratings(db:Session=Depends(get_db),
     - last_nam: str
     - comments: str
     - created_at: datetime Field
-    
-
     """
     ratings = db.query(models.Ratings).all()
     return ratings[skip: skip + limit]
 
 
 @router.post(
-    path="/ratings", 
+    path="/ratings",
     response_model=Ratings,
-    status_code=status.HTTP_201_CREATED, 
+    status_code=status.HTTP_201_CREATED,
     summary="Register a rating.",
     tags=["Ratings"])
 def post_rating(entry_point:Ratings,db:Session=Depends(get_db)):
     """
     ## Pos a rating
-
     **This path operation register a rating in the app.**
-    
     **- Parameters:**
     - rating: Ratings
-    
-    **Returns a json body with a message:** 
+    **Returns a json body with a message:**
     - message: "rating sent Successfully"
-        
     """
     try:
-        rating = models.Ratings(booking_id = entry_point.booking_id, 
+        rating = models.Ratings(booking_id = entry_point.booking_id,
                                 stars = entry_point.stars,
                                 first_name = entry_point.first_name,
                                 last_name = entry_point.last_name,

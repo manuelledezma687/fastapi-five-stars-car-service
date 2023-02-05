@@ -1,6 +1,4 @@
 from pydantic import BaseModel, Field, EmailStr
-from fastapi import Form
-
 
 class Contact(BaseModel):
     first_name: str = Field(
@@ -17,4 +15,3 @@ class Contact(BaseModel):
         max_length=100,
         example="Hi i want to make a reservation."
         )
-    

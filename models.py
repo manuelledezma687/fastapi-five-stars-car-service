@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import declarative_base, relationship
 from connections import Base
+
 
 class Users(Base):
     __tablename__ = 'users'
@@ -15,7 +15,8 @@ class Users(Base):
     language = Column(String(20))
     user_since = Column(String(50))
     status = Column(Integer)
-    
+
+
 class Bookings(Base):
     __tablename__ = 'bookings'
     booking_id = Column(Integer,primary_key=True,index=True)
@@ -32,7 +33,8 @@ class Bookings(Base):
     hour = Column(String(20))
     referral = Column(String(20))  ## resolver la relacion con la tabla y el codigo unico
     created_at = Column(String(50))
-    
+
+
 class Ratings(Base):
     __tablename__ = 'ratings'
     rating_id = Column(Integer,primary_key=True,index=True)
@@ -42,14 +44,4 @@ class Ratings(Base):
     last_name = Column(String(20))
     comments = Column(String(50))
     created_at = Column(String(50))
-    
-class Referrals(Base):
-    __tablename__ = 'referrals'
-    referral_id = Column(Integer,primary_key=True,index=True)
-    referral_code = Column(String(20))
-    email = Column(String(30))
-    telephone = Column(Integer)
-    first_name = Column(String(20))
-    last_name = Column(String(20))
-    user_since = Column(String(50))
-    status = Column(Integer)
+
