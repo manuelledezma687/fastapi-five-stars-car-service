@@ -1,0 +1,9 @@
+services:
+  fastapi-five-stars-car-service:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/fastapi-five-stars-car-service
+    ports:
+      - '80:80'
